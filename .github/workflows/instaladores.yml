@@ -16,7 +16,9 @@ jobs:
           - os: windows-latest
             comando: dist:win
             archivos: dist/*.exe
-          - os: macos-latest
+          # Mac Intel: las de chip Apple (macos-latest) suelen no tener capacidad y el trabajo
+          # se cancela sin empezar. El .dmg sale igual "universal" (Apple + Intel).
+          - os: macos-15-intel
             comando: dist:mac
             archivos: dist/*.dmg
     runs-on: ${{ matrix.os }}
