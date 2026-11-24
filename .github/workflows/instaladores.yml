@@ -1,0 +1,45 @@
+# Genera los instaladores de Windows (.exe) y Mac (.dmg) en las máquinas de GitHub.
+# Se ejecuta a mano desde la pestaña "Actions" o al subir una etiqueta tipo v1.0.1.
+name: Instaladores
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  construir:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            comando: dist:win
+            archivos: dist/*.exe
+          - os: macos-latest
+            comando: dist:mac
+            archivos: dist/*.dmg
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Generar instalador
+        # Sin certificado de Apple/Windows: en Mac se firma ad-hoc (identity "-" en package.json),
+        # necesario para que abra en Macs con chip Apple; en Windows queda sin firma.
+        run: npm run ${{ matrix.comando }} -- --publish never
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: instalador-${{ matrix.os }}
+          path: ${{ matrix.archivos }}
+          if-no-files-found: error

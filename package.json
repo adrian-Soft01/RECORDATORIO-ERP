@@ -1,0 +1,67 @@
+{
+  "name": "recordatorio-erp",
+  "productName": "Recordatorio ERP",
+  "version": "1.0.0",
+  "description": "Recuerda al personal subir sus funciones trabajadas del día.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "probar": "electron . --probar",
+    "probar-repo": "electron . --probar-repo",
+    "test": "node test/horario.test.js",
+    "dist:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac"
+  },
+  "build": {
+    "appId": "com.empresa.recordatorio-erp",
+    "productName": "Recordatorio ERP",
+    "files": [
+      "src/**/*",
+      "config.json",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "icon": "build/icon.png",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "artifactName": "Recordatorio-ERP-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "runAfterFinish": true,
+      "shortcutName": "Recordatorio ERP"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
+      ],
+      "artifactName": "Recordatorio-ERP-${version}-mac.${ext}",
+      "category": "public.app-category.productivity",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "extendInfo": {
+        "LSUIElement": true
+      }
+    },
+    "dmg": {
+      "title": "Recordatorio ERP"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0"
+  }
+}
